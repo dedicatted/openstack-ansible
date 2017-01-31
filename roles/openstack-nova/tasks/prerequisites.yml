@@ -1,0 +1,28 @@
+---
+
+- name: Create a new database with name 'nova'
+  mysql_db:
+    name: nova
+    state: present
+
+- name: Grant all for user 'nova'
+  mysql_user: name=nova host={{ item }} password={{ root_db_password }} priv=nova.*:ALL,GRANT state=present
+  with_items:
+  - 127.0.0.1
+  - ::1
+  - localhost
+  - "%"
+
+- name: Create a new database with name 'nova_api'
+  mysql_db:
+    name: nova_api
+    state: present
+
+- name: Grant all for user 'nova_api'
+  mysql_user: name=nova host={{ item }} password={{ root_db_password }} priv=nova_api.*:ALL,GRANT state=present
+  with_items:
+  - 127.0.0.1
+  - ::1
+  - localhost
+  - "%"
+

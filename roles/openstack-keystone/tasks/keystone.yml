@@ -1,0 +1,41 @@
+---
+
+- name: Install the OpenStack Keystone
+  apt:
+    name: keystone
+    state: present
+    allow_unauthenticated: yes
+
+- name: configure database access
+  ini_file: 
+    dest: /etc/keystone/keystone.conf 
+    section: database
+    option: connection
+    value: mysql+pymysql://keystone:{{ root_db_password }}@127.0.0.1/keystone
+  tags: configuration
+
+- name: configure the Fernet token provider
+  ini_file:
+    dest: /etc/keystone/keystone.conf
+    section: token
+    option: provider
+    value: fernet
+  tags: configuration
+
+- name: Populate the Identity service database
+  shell: keystone-manage db_sync
+
+- name: Initialize Fernet key repositories
+  command: keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+
+- name: Initialize credential setup
+  command: keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
+
+- name: Bootstrap the Identity service
+  command: keystone-manage bootstrap --bootstrap-password {{ root_db_password }} --bootstrap-admin-url http://{{ controller_url }}:35357/v3/ --bootstrap-internal-url http://{{ controller_url }}:35357/v3/ --bootstrap-public-url http://{{ controller_url }}:5000/v3/ --bootstrap-region-id RegionOne
+
+- name: set servername
+  lineinfile:  
+    dest: /etc/apache2/apache2.conf
+    line: 'ServerName controller'
+  notify: restart apache2

@@ -1,0 +1,25 @@
+---
+
+- name: Install the OpenStack Nova
+  apt: name={{ item }} state=present allow_unauthenticated=yes
+  with_items:
+    - nova-api
+    - nova-conductor
+    - nova-consoleauth
+    - nova-novncproxy
+    - nova-scheduler
+
+- name: deploy nova config
+  template: src=nova.conf.j2 dest=/etc/nova/nova.conf
+  notify:
+    - restart nova-api
+    - restart nova-consoleauth
+    - restart nova-scheduler
+    - restart nova-conductor
+    - restart nova-novncproxy
+
+- name: Populate the Compute API database
+  shell: nova-manage api_db sync
+
+- name: Populate the Compute database
+  shell: nova-manage db sync

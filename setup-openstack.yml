@@ -1,0 +1,12 @@
+- name: Setup OpenStack
+  hosts: all
+  become: yes
+  tags: setup
+  roles:
+    - openstack-client
+    - openstack-keystone
+    - openstack-glance
+    - openstack-nova
+    - openstack-neutron
+    - openstack-dashboard
+    - openstack-cinder

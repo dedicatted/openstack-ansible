@@ -1,0 +1,32 @@
+---
+
+- name: Install the OpenStack Cinder
+  apt: name={{ item }} state=present allow_unauthenticated=yes
+  with_items:
+    - cinder-api
+    - cinder-scheduler
+
+- name: deploy cinder config
+  template: src=cinder.conf.j2 dest=/etc/cinder/cinder.conf
+  notify:
+    - restart nova-api
+    - restart cinder-scheduler
+    - restart cinder-api
+	
+- name: Populate the Block Storage database
+  shell: cinder-manage db sync	
+
+- name: install lvm2
+  apt: name=lvm2 state=present
+
+- name: Create the LVM physical volume
+  command: pvcreate /dev/sdb
+
+- name: Create the LVM volume group
+  command: vgcreate cinder-volumes /dev/sdb
+
+- name: Install Cinder Volume
+  apt: name=cinder-volume state=present allow_unauthenticated=yes
+  notify:
+    - restart tgt
+    - restart cinder-volume

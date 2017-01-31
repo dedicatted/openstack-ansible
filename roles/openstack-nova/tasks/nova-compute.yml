@@ -1,0 +1,16 @@
+---
+
+- name: Install the OpenStack Nova Compute
+  apt:
+    name: nova-compute
+    state: present
+    allow_unauthenticated: yes
+
+- name: configure libvirt
+  ini_file:
+    dest: /etc/nova/nova-compute.conf
+    section: libvirt
+    option: virt_type
+    value: qemu
+  notify: 
+    - restart nova-compute

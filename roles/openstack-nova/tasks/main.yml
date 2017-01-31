@@ -1,0 +1,7 @@
+---
+
+- include: prerequisites.yml
+
+#- include: nova.yml
+
+- include: nova-compute.yml

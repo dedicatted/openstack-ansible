@@ -1,0 +1,21 @@
+---
+
+- name: install software-properties-common
+  apt:
+    name: software-properties-common
+    state: installed
+
+- name: enable the openstack repository
+  apt_repository:
+    repo: deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/newton main
+    state: present
+
+- name: Upgrade the packages
+  apt:
+    update_cache: yes
+
+- name: Install the OpenStack client
+  apt:
+    name: python-openstackclient
+    state: present
+    allow_unauthenticated: yes

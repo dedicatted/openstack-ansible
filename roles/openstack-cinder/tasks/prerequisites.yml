@@ -1,0 +1,14 @@
+---
+
+- name: Create a new database with name 'cinder'
+  mysql_db:
+    name: cinder
+    state: present
+
+- name: Grant all for user 'cinder'
+  mysql_user: name=cinder host={{ item }} password={{ root_db_password }} priv=cinder.*:ALL,GRANT state=present
+  with_items:
+  - 127.0.0.1
+  - ::1
+  - localhost
+  - "%"

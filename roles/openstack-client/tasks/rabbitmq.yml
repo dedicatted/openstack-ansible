@@ -1,0 +1,23 @@
+---
+
+- name: install rabbitmq-server
+  apt:
+    name: rabbitmq-server
+    state: present
+
+- name: configure user
+  rabbitmq_user:
+    user: openstack
+    password: 2016%Ufknhtql
+    permissions:
+      - vhost: /
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+    state: present
+
+- name: add the openstack user
+  shell: rabbitmqctl add_user openstack 2016%Ufknhtql
+
+- name: Permit configuration, write, and read access for the openstack user
+  shell: rabbitmqctl set_permissions openstack ".*" ".*" ".*"

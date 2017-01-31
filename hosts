@@ -1,0 +1,2 @@
+[server]
+localhost ansible_port=10022 ansible_sudo_pass="werthrf"

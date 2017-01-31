@@ -1,0 +1,9 @@
+---
+
+- include: client.yml
+
+- include: mariadb.yml
+
+- include: rabbitmq.yml
+
+- include: memcached.yml

@@ -1,0 +1,6 @@
+---
+# Ansible
+ansible_user: vagrant
+ansible_password: vagrant
+# System
+env_path: /etc/environment

@@ -1,0 +1,14 @@
+---
+
+- name: Create a new database with name 'keystone'
+  mysql_db:
+    name: keystone
+    state: present
+
+- name: Grant all for user 'keystone'
+  mysql_user: name=keystone host={{ item }} password={{ root_db_password }} priv=keystone.*:ALL,GRANT state=present
+  with_items:
+  - 127.0.0.1
+  - ::1
+  - localhost
+  - "%"

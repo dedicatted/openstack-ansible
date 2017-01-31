@@ -1,0 +1,14 @@
+---
+
+- name: Create a new database with name 'glance'
+  mysql_db:
+    name: glance
+    state: present
+
+- name: Grant all for user 'glance'
+  mysql_user: name=glance host={{ item }} password={{ root_db_password }} priv=glance.*:ALL,GRANT state=present
+  with_items:
+  - 127.0.0.1
+  - ::1
+  - localhost
+  - "%"

@@ -1,0 +1,55 @@
+---
+
+- name: Install the OpenStack Dashboard
+  apt:
+    name: openstack-dashboard
+    state: present
+    allow_unauthenticated: yes
+
+- name: configuring to use controller node
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    regexp: 'OPENSTACK_HOST'
+    line: 'OPENSTACK_HOST = "controller"'
+
+- name: configuring to allow all hosts
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    regexp: 'ALLOWED_HOSTS'
+    line: "ALLOWED_HOSTS = ['*', ]"
+
+- name: configuring to use django SE
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    line: "SESSION_ENGINE = 'django.contrib.sessions.backends.cache'"
+
+- name: Enable the Identity API version 3
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    regexp: 'OPENSTACK_KEYSTONE_URL'
+    line: 'OPENSTACK_KEYSTONE_URL = "http://%s:5000/v3" % OPENSTACK_HOST'
+
+- name: Enable support for domains
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    regexp: 'OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT'
+    line: 'OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True'
+
+#!!!!!!!!!!!!!!- name: Configure API versions
+#  lineinfile:
+#    dest: /etc/openstack-dashboard/local_settings.py
+#    regexp: 'OPENSTACK_HOST'
+#    line: 'OPENSTACK_HOST = "controller"'
+
+- name: Configure default as the default domain
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    regexp: 'OPENSTACK_KEYSTONE_DEFAULT_DOMAIN'
+    line: 'OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = "default"'
+
+- name: configuring to use controller node
+  lineinfile:
+    dest: /etc/openstack-dashboard/local_settings.py
+    regexp: 'OPENSTACK_KEYSTONE_DEFAULT_ROLE'
+    line: 'OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"'
+  notify: reload apache2

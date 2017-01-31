@@ -1,0 +1,26 @@
+---
+
+- name: Install the OpenStack Glance
+  apt:
+    name: glance
+    state: present
+    allow_unauthenticated: yes
+
+- name: configure database access
+  ini_file: 
+    dest: /etc/glance/glance-api.conf
+    section: database
+    option: connection
+    value: mysql+pymysql://glance:{{ root_db_password }}@127.0.0.1/keystone
+  tags: configuration
+
+- name: deploy glance-api config
+  template: src=glance-api.conf.j2 dest=/etc/glance/glance-api.conf
+  notify: restart glanceapi
+
+- name: deploy glance-registry config
+  template: src=glance-registry.conf.j2 dest=/etc/glance/glance-registry.conf
+  notify: restart glanceregistry
+
+- name: Populate the Image service database
+  shell: glance-manage db_sync

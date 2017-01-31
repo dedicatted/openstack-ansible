@@ -1,0 +1,7 @@
+---
+
+- include: prerequisites.yml
+
+- include: keystone.yml
+
+#- include: environment.yml
