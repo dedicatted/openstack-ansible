@@ -27,3 +27,6 @@
 
 - include: change-root-passwords.yml
   when: p.stat.exists == False
+
+- name: kostulb
+  command: mysql -u root -e "use mysql; update user set plugin='' where User='root'; flush privileges;"
